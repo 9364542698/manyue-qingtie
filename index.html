@@ -160,14 +160,18 @@ document.getElementById('btnGenerate').addEventListener('click', function(){
   // 等原图加载完再生成
   function doit(){
     if(!fullReady){ setTimeout(doit,150); return; }
+    // 输出缩小到2000px宽，手机生成快且清晰度够用
+    var OUT_W = 2000;
+    var outScale = OUT_W / FULL_W;
+    var OUT_H = Math.round(FULL_H * outScale);
     var rc = document.createElement('canvas');
-    rc.width = FULL_W; rc.height = FULL_H;
+    rc.width = OUT_W; rc.height = OUT_H;
     var rctx = rc.getContext('2d');
-    rctx.drawImage(fullImg,0,0,FULL_W,FULL_H);
+    rctx.drawImage(fullImg, 0, 0, OUT_W, OUT_H);
     rctx.save();
-    rctx.translate(nameX,nameY);
+    rctx.translate(nameX * outScale, nameY * outScale);
     rctx.fillStyle = '#ffe680';
-    rctx.font = 'bold ' + nameFontSize + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
+    rctx.font = 'bold ' + Math.round(nameFontSize * outScale) + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
     rctx.textAlign = 'center';
     rctx.textBaseline = 'middle';
     if(guestName.length===2) rctx.fillText(guestName[0]+'　'+guestName[1],0,0);
@@ -180,7 +184,7 @@ document.getElementById('btnGenerate').addEventListener('click', function(){
       document.getElementById('resultArea').classList.add('show');
       showToast('✅ 请长按图片保存到相册');
       document.getElementById('resultArea').scrollIntoView({behavior:'smooth'});
-    },'image/png',1.0);
+    },'image/jpeg',0.85);
   }
   doit();
 });
