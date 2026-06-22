@@ -6,240 +6,187 @@
 <title>满月宴请帖生成器</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{
-  background:#1a0a0a;font-family:"SimSun","宋体","Microsoft YaHei",sans-serif;
-  min-height:100vh;display:flex;justify-content:center;align-items:flex-start;
-  padding:12px;-webkit-tap-highlight-color:transparent;
-}
+body{background:#1a0a0a;font-family:"SimSun","宋体","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;-webkit-tap-highlight-color:transparent;}
 .page{width:100%;max-width:440px;padding:8px;}
-h1{text-align:center;color:#d4a017;font-size:1.3em;letter-spacing:6px;
-  margin-bottom:10px;font-weight:normal;}
-.canvas-wrap{border:3px solid #8b6914;border-radius:10px;overflow:hidden;
-  background:#000;position:relative;margin-bottom:12px;}
+h1{text-align:center;color:#d4a017;font-size:1.3em;letter-spacing:6px;margin-bottom:10px;}
+.canvas-wrap{border:3px solid #8b6914;border-radius:10px;overflow:hidden;background:#000;position:relative;margin-bottom:12px;}
 .canvas-wrap canvas{display:block;width:100%;height:auto;}
-.canvas-wrap .tip{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,0.75);color:#ffd700;padding:5px 14px;border-radius:16px;
-  font-size:0.78em;letter-spacing:2px;pointer-events:none;white-space:nowrap;
-}
+.canvas-wrap .tip{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#ffd700;padding:5px 14px;border-radius:16px;font-size:0.78em;letter-spacing:2px;pointer-events:none;white-space:nowrap;}
 .input-row{background:#2c1510;border-radius:12px;padding:14px;margin-bottom:10px;}
-.input-row label{display:block;color:#ffd700;font-size:1.1em;text-align:center;
-  letter-spacing:4px;margin-bottom:10px;}
-.input-row input{
-  width:100%;padding:14px;border:3px solid #6b4a2a;border-radius:12px;
-  background:#1a0a0a;color:#ffd700;font-size:1.6em;text-align:center;
-  letter-spacing:10px;outline:none;-webkit-appearance:none;
-}
+.input-row label{display:block;color:#ffd700;font-size:1.1em;text-align:center;letter-spacing:4px;margin-bottom:10px;}
+.input-row input{width:100%;padding:14px;border:3px solid #6b4a2a;border-radius:12px;background:#1a0a0a;color:#ffd700;font-size:1.6em;text-align:center;letter-spacing:10px;outline:none;-webkit-appearance:none;}
 .input-row input:focus{border-color:#ffd700;}
 .input-row input::placeholder{color:#553333;font-size:0.55em;letter-spacing:3px;}
 .btns{display:flex;gap:8px;margin-bottom:10px;}
-.btns button{flex:1;padding:16px;border:none;border-radius:14px;font-size:1.1em;
-  font-weight:bold;letter-spacing:4px;cursor:pointer;}
-.btn-main{background:linear-gradient(180deg,#ffd700,#c9a020);color:#3d0000;
-  font-size:1.2em!important;box-shadow:0 4px 16px rgba(200,160,30,0.35);}
+.btns button{flex:1;padding:16px;border:none;border-radius:14px;font-size:1.1em;font-weight:bold;letter-spacing:4px;cursor:pointer;}
+.btn-main{background:linear-gradient(180deg,#ffd700,#c9a020);color:#3d0000;font-size:1.2em!important;box-shadow:0 4px 16px rgba(200,160,30,0.35);}
 .btn-main:active{transform:scale(0.96);}
 .btn-sub{background:#4a2820;color:#d4a017;border:2px solid #8b6914!important;}
 .result-area{background:#2c1510;border-radius:12px;padding:12px;display:none;}
 .result-area.show{display:block;}
-.result-area img{width:100%;border-radius:8px;display:block;cursor:pointer;}
-.result-area .save-tip{text-align:center;color:#d4a017;font-size:0.85em;
-  margin-top:10px;letter-spacing:2px;}
-.toast{
-  position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(0);
-  background:rgba(0,0,0,0.9);color:#ffd700;padding:18px 28px;border-radius:14px;
-  font-size:1.1em;letter-spacing:3px;z-index:999;transition:transform 0.2s;
-  pointer-events:none;border:2px solid #8b6914;
-}
+.result-area img{width:100%;border-radius:8px;display:block;}
+.result-area .save-tip{text-align:center;color:#d4a017;font-size:0.85em;margin-top:10px;letter-spacing:2px;}
+.toast{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(0);background:rgba(0,0,0,0.9);color:#ffd700;padding:18px 28px;border-radius:14px;font-size:1.1em;letter-spacing:3px;z-index:999;transition:transform 0.2s;pointer-events:none;border:2px solid #8b6914;}
 .toast.show{transform:translate(-50%,-50%) scale(1);}
-.small{font-size:0.7em;color:#aaa;letter-spacing:1px;}
 </style>
 </head>
 <body>
 <div class="page">
   <h1>🧧 满月宴请帖 🧧</h1>
-
-  <!-- 预览区 -->
   <div class="canvas-wrap" id="canvasWrap">
     <canvas id="previewCanvas"></canvas>
     <div class="tip" id="posTip">👆 点击下划线位置定位名字</div>
   </div>
-
-  <!-- 输入区 -->
   <div class="input-row">
     <label>请输入客人姓名</label>
-    <input type="text" id="nameInput" placeholder="如：张三" maxlength="6" autofocus>
+    <input type="text" id="nameInput" placeholder="如：张三" maxlength="6">
   </div>
-
-  <!-- 按钮 -->
   <div class="btns">
     <button class="btn-main" id="btnGenerate">📋 生成请帖</button>
     <button class="btn-sub" id="btnReset">🔄 重新定位</button>
   </div>
-
-  <!-- 生成结果（可长按保存） -->
   <div class="result-area" id="resultArea">
     <img id="resultImg" alt="请帖图片 - 长按保存到相册">
     <div class="save-tip">⬆ 长按上方图片 → 选择"保存图片"</div>
   </div>
 </div>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== 全局状态 ==========
-const canvas = document.getElementById('previewCanvas');
-const ctx = canvas.getContext('2d');
-const bgImg = new Image();
-bgImg.src = '满月宴请帖.png';  // 请确认此图片与HTML同目录
-bgImg.crossOrigin = 'anonymous';
+var canvas = document.getElementById('previewCanvas');
+var ctx = canvas.getContext('2d');
 
-const ORIG_W = 5760;
-const ORIG_H = 11296;
+// 预览用小图：206KB，秒开
+var previewImg = new Image();
+previewImg.src = '满月宴请帖_预览.jpg';
 
-// 默认名字位置（下划线中央偏右位置，会在用户点击后覆盖）
-let nameX = 2880;
-let nameY = 3200;  // 28.3% - 下划线区域
-let nameFontSize = 240;  // 加粗需要稍大字号
-let scale = 1;
-let guestName = '';
-let positionSet = false;  // 用户是否已定位
+// 原图：2.3MB，生成时用
+var fullImg = new Image();
+fullImg.src = '满月宴请帖.png';
+var fullReady = false;
+fullImg.onload = function(){ fullReady = true; };
 
-// ========== 图片加载 ==========
-bgImg.onload = function() {
+var FULL_W = 5760, FULL_H = 11296;
+var nameX = 2880, nameY = 3200, nameFontSize = 240;
+var scale = 1;
+var guestName = '';
+var posSet = false;
+
+previewImg.onload = function(){
   resizeCanvas();
   drawPreview();
 };
 
-function resizeCanvas() {
-  const wrap = document.getElementById('canvasWrap');
-  const maxW = wrap.clientWidth;
-  const maxH = window.innerHeight * 0.42;
-  let w = maxW, h = w * (ORIG_H / ORIG_W);
-  if (h > maxH) { h = maxH; w = h * (ORIG_W / ORIG_H); }
+function resizeCanvas(){
+  var wrap = document.getElementById('canvasWrap');
+  var maxW = wrap.clientWidth;
+  var maxH = window.innerHeight * 0.42;
+  var w = maxW, h = w * (FULL_H / FULL_W);
+  if(h > maxH){ h = maxH; w = h * (FULL_W / FULL_H); }
   canvas.style.width = w + 'px';
   canvas.style.height = h + 'px';
   canvas.width = w * window.devicePixelRatio;
   canvas.height = h * window.devicePixelRatio;
-  ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-  scale = w / ORIG_W;
+  ctx.setTransform(window.devicePixelRatio,0,0,window.devicePixelRatio,0,0);
+  scale = w / FULL_W;
 }
 
-// ========== 绘制预览 ==========
-function drawPreview() {
-  const w = canvas.width / window.devicePixelRatio;
-  const h = canvas.height / window.devicePixelRatio;
-  ctx.clearRect(0, 0, w, h);
-  ctx.drawImage(bgImg, 0, 0, w, h);
+function drawPreview(){
+  var w = canvas.width / window.devicePixelRatio;
+  var h = canvas.height / window.devicePixelRatio;
+  ctx.clearRect(0,0,w,h);
+  ctx.drawImage(previewImg,0,0,w,h);
 
-  if (!guestName.trim()) {
-    // 显示十字标记提示用户点击位置
-    if (positionSet) {
-      const sx = nameX * scale, sy = nameY * scale;
+  if(!guestName.trim()){
+    if(posSet){
+      var sx = nameX * scale, sy = nameY * scale;
       ctx.strokeStyle = 'rgba(255,215,0,0.7)';
       ctx.lineWidth = 2;
-      ctx.setLineDash([8, 6]);
+      ctx.setLineDash([8,6]);
       ctx.beginPath();
-      ctx.moveTo(sx - 50, sy); ctx.lineTo(sx + 50, sy);
-      ctx.moveTo(sx, sy - 50); ctx.lineTo(sx, sy + 50);
+      ctx.moveTo(sx-50,sy); ctx.lineTo(sx+50,sy);
+      ctx.moveTo(sx,sy-50); ctx.lineTo(sx,sy+50);
       ctx.stroke();
       ctx.setLineDash([]);
     }
     return;
   }
 
-  const sx = nameX * scale, sy = nameY * scale, fs = nameFontSize * scale;
-
+  var sx = nameX * scale, sy = nameY * scale, fs = nameFontSize * scale;
   ctx.save();
-  ctx.translate(sx, sy);
+  ctx.translate(sx,sy);
   ctx.fillStyle = '#0a0000';
-  // 加粗：使用 bold 字体
   ctx.font = 'bold ' + fs + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-
-  if (guestName.length === 2) {
-    ctx.fillText(guestName[0] + '　' + guestName[1], 0, 0);
-  } else {
-    ctx.fillText(guestName, 0, 0);
-  }
+  if(guestName.length === 2) ctx.fillText(guestName[0]+'　'+guestName[1],0,0);
+  else ctx.fillText(guestName,0,0);
   ctx.restore();
 }
 
-// ========== 用户点击定位下划线 ==========
-canvas.addEventListener('click', function(e) {
-  const rect = canvas.getBoundingClientRect();
+canvas.addEventListener('click', function(e){
+  var rect = canvas.getBoundingClientRect();
   nameX = Math.round((e.clientX - rect.left) / scale);
   nameY = Math.round((e.clientY - rect.top) / scale);
-  positionSet = true;
-
+  posSet = true;
   document.getElementById('posTip').textContent = '✅ 名字位置已设置（点击可重设）';
   drawPreview();
   showToast('✅ 位置已设定！输入名字即可');
 });
 
-// 触屏点击
-canvas.addEventListener('touchend', function(e) {
-  if (e.changedTouches.length === 1) {
+canvas.addEventListener('touchend', function(e){
+  if(e.changedTouches.length===1){
     e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
+    var rect = canvas.getBoundingClientRect();
     nameX = Math.round((e.changedTouches[0].clientX - rect.left) / scale);
     nameY = Math.round((e.changedTouches[0].clientY - rect.top) / scale);
-    positionSet = true;
+    posSet = true;
     document.getElementById('posTip').textContent = '✅ 名字位置已设置（点击可重设）';
     drawPreview();
     showToast('✅ 位置已设定！输入名字即可');
   }
-}, { passive: false });
+}, {passive:false});
 
-// ========== 名字输入实时预览 ==========
-document.getElementById('nameInput').addEventListener('input', function(e) {
+document.getElementById('nameInput').addEventListener('input', function(e){
   guestName = e.target.value.trim();
   drawPreview();
 });
 
-// ========== 生成请帖（输出高清图片供长按保存） ==========
-document.getElementById('btnGenerate').addEventListener('click', function() {
-  if (!guestName) { showToast('⚠️ 请先输入姓名'); return; }
-  if (!positionSet) { showToast('⚠️ 请先在图片上点击定位'); return; }
+document.getElementById('btnGenerate').addEventListener('click', function(){
+  if(!guestName){ showToast('⚠️ 请先输入姓名'); return; }
+  if(!posSet){ showToast('⚠️ 请先在图片上点击定位'); return; }
+  showToast('⏳ 正在生成高清图片...');
 
-  // 生成原分辨率图片
-  const resultCanvas = document.createElement('canvas');
-  resultCanvas.width = ORIG_W;
-  resultCanvas.height = ORIG_H;
-  const rctx = resultCanvas.getContext('2d');
-  rctx.drawImage(bgImg, 0, 0, ORIG_W, ORIG_H);
+  // 等原图加载完再生成
+  function doit(){
+    if(!fullReady){ setTimeout(doit,150); return; }
+    var rc = document.createElement('canvas');
+    rc.width = FULL_W; rc.height = FULL_H;
+    var rctx = rc.getContext('2d');
+    rctx.drawImage(fullImg,0,0,FULL_W,FULL_H);
+    rctx.save();
+    rctx.translate(nameX,nameY);
+    rctx.fillStyle = '#0a0000';
+    rctx.font = 'bold ' + nameFontSize + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
+    rctx.textAlign = 'center';
+    rctx.textBaseline = 'middle';
+    if(guestName.length===2) rctx.fillText(guestName[0]+'　'+guestName[1],0,0);
+    else rctx.fillText(guestName,0,0);
+    rctx.restore();
 
-  rctx.save();
-  rctx.translate(nameX, nameY);
-  rctx.fillStyle = '#0a0000';
-  rctx.font = 'bold ' + nameFontSize + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
-  rctx.textAlign = 'center';
-  rctx.textBaseline = 'middle';
-
-  if (guestName.length === 2) {
-    rctx.fillText(guestName[0] + '　' + guestName[1], 0, 0);
-  } else {
-    rctx.fillText(guestName, 0, 0);
+    rc.toBlob(function(blob){
+      var url = URL.createObjectURL(blob);
+      document.getElementById('resultImg').src = url;
+      document.getElementById('resultArea').classList.add('show');
+      showToast('✅ 请长按图片保存到相册');
+      document.getElementById('resultArea').scrollIntoView({behavior:'smooth'});
+    },'image/png',1.0);
   }
-  rctx.restore();
-
-  // 转为blob URL显示在img中供长按保存
-  resultCanvas.toBlob(function(blob) {
-    const url = URL.createObjectURL(blob);
-    const resultImg = document.getElementById('resultImg');
-    resultImg.src = url;
-    document.getElementById('resultArea').classList.add('show');
-    showToast('✅ 请长按图片保存到相册');
-
-    // 滚动到结果区域
-    document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-  }, 'image/png', 1.0);
+  doit();
 });
 
-// ========== 重新定位 ==========
-document.getElementById('btnReset').addEventListener('click', function() {
-  positionSet = false;
+document.getElementById('btnReset').addEventListener('click', function(){
+  posSet = false;
   guestName = '';
   document.getElementById('nameInput').value = '';
   document.getElementById('posTip').textContent = '👆 点击下划线位置定位名字';
@@ -248,20 +195,15 @@ document.getElementById('btnReset').addEventListener('click', function() {
   showToast('🔄 已重置，请重新定位');
 });
 
-// ========== Toast ==========
-let _tid;
-function showToast(m) {
-  const t = document.getElementById('toast');
+var _tid;
+function showToast(m){
+  var t = document.getElementById('toast');
   t.textContent = m; t.classList.add('show');
   clearTimeout(_tid);
-  _tid = setTimeout(function() { t.classList.remove('show'); }, 2000);
+  _tid = setTimeout(function(){ t.classList.remove('show'); },2000);
 }
 
-// ========== 窗口变化 ==========
-window.addEventListener('resize', function() {
-  resizeCanvas();
-  drawPreview();
-});
+window.addEventListener('resize',function(){ resizeCanvas(); drawPreview(); });
 </script>
 </body>
 </html>
