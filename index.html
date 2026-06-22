@@ -5,15 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>满月宴请帖生成器</title>
 <style>
-/* 加载 Serif 字体到页面 */
-@font-face {
-  font-family: 'QingTieSerif';
-  src: url('https://cdn.jsdelivr.net/npm/@canvas-fonts/notoserifsc@1.0.0/files/noto-serif-sc-700.woff2') format('woff2');
-  font-weight: bold;
-  font-display: swap;
-}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#1a0a0a;font-family:"QingTieSerif","SimSun","宋体","Songti SC",serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;-webkit-tap-highlight-color:transparent;}
+body{background:#1a0a0a;font-family:"SimSun","宋体","Songti SC",serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:12px;-webkit-tap-highlight-color:transparent;}
 .page{width:100%;max-width:440px;padding:8px;}
 h1{text-align:center;color:#d4a017;font-size:1.3em;letter-spacing:6px;margin-bottom:10px;}
 .canvas-wrap{border:3px solid #8b6914;border-radius:10px;overflow:hidden;background:#000;position:relative;margin-bottom:12px;}
@@ -63,11 +56,9 @@ h1{text-align:center;color:#d4a017;font-size:1.3em;letter-spacing:6px;margin-bot
 var canvas = document.getElementById('previewCanvas');
 var ctx = canvas.getContext('2d');
 
-// 预览用小图：206KB，秒开
 var previewImg = new Image();
 previewImg.src = '满月宴请帖_预览.jpg';
 
-// 原图：2.3MB，生成时用
 var fullImg = new Image();
 fullImg.src = '满月宴请帖.png';
 var fullReady = false;
@@ -79,26 +70,13 @@ var scale = 1;
 var guestName = '';
 var posSet = false;
 
-// ===== 字体加载完成后再初始化 =====
-var FONT_FAMILY = '"QingTieSerif","SimSun","宋体","Songti SC","Noto Serif CJK SC",serif';
+// serif = 所有平台都有衬线字体（宋体风格）
+var FONT = 'bold %px serif';
 
-// 等待 Web 字体加载
-document.fonts.ready.then(function(){
-  previewImg.onload = function(){
-    resizeCanvas();
-    drawPreview();
-  };
-  // 如果图片已加载，手动触发
-  if(previewImg.complete){ previewImg.onload(); }
-});
-
-// 备用：如果字体没加载（超时），用系统宋体
-setTimeout(function(){
-  if(!document.fonts.check('bold 16px ' + FONT_FAMILY)){
-    console.log('Web字体加载失败，使用系统字体');
-    FONT_FAMILY = '"SimSun","宋体","Songti SC","STSong",serif';
-  }
-}, 3000);
+previewImg.onload = function(){
+  resizeCanvas();
+  drawPreview();
+};
 
 function resizeCanvas(){
   var wrap = document.getElementById('canvasWrap');
@@ -134,16 +112,15 @@ function drawPreview(){
     }
     return;
   }
-
   var sx = nameX * scale, sy = nameY * scale, fs = nameFontSize * scale;
+  var txt = guestName.length===2 ? guestName[0]+'　'+guestName[1] : guestName;
   ctx.save();
   ctx.translate(sx,sy);
   ctx.fillStyle = '#ffe680';
-  ctx.font = 'bold ' + fs + 'px ' + FONT_FAMILY;
+  ctx.font = FONT.replace('%',fs);
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  if(guestName.length === 2) ctx.fillText(guestName[0]+'　'+guestName[1],0,0);
-  else ctx.fillText(guestName,0,0);
+  ctx.fillText(txt,0,0);
   ctx.restore();
 }
 
@@ -152,9 +129,9 @@ canvas.addEventListener('click', function(e){
   nameX = Math.round((e.clientX - rect.left) / scale);
   nameY = Math.round((e.clientY - rect.top) / scale);
   posSet = true;
-  document.getElementById('posTip').textContent = '✅ 名字位置已设置（点击可重设）';
+  document.getElementById('posTip').textContent = '✅ 名字位置已设置';
   drawPreview();
-  showToast('✅ 位置已设定！输入名字即可');
+  showToast('✅ 位置已设定！');
 });
 
 canvas.addEventListener('touchend', function(e){
@@ -164,9 +141,9 @@ canvas.addEventListener('touchend', function(e){
     nameX = Math.round((e.changedTouches[0].clientX - rect.left) / scale);
     nameY = Math.round((e.changedTouches[0].clientY - rect.top) / scale);
     posSet = true;
-    document.getElementById('posTip').textContent = '✅ 名字位置已设置（点击可重设）';
+    document.getElementById('posTip').textContent = '✅ 名字位置已设置';
     drawPreview();
-    showToast('✅ 位置已设定！输入名字即可');
+    showToast('✅ 位置已设定！');
   }
 }, {passive:false});
 
@@ -177,33 +154,34 @@ document.getElementById('nameInput').addEventListener('input', function(e){
 
 document.getElementById('btnGenerate').addEventListener('click', function(){
   if(!guestName){ showToast('⚠️ 请先输入姓名'); return; }
-  if(!posSet){ showToast('⚠️ 请先在图片上点击定位'); return; }
-  showToast('⏳ 正在生成高清图片...');
+  if(!posSet){ showToast('⚠️ 请先点击定位'); return; }
+  showToast('⏳ 正在生成...');
 
   function doit(){
     if(!fullReady){ setTimeout(doit,150); return; }
     var OUT_W = 2000;
-    var outScale = OUT_W / FULL_W;
-    var OUT_H = Math.round(FULL_H * outScale);
+    var s2 = OUT_W / FULL_W;
+    var OUT_H = Math.round(FULL_H * s2);
     var rc = document.createElement('canvas');
     rc.width = OUT_W; rc.height = OUT_H;
     var rctx = rc.getContext('2d');
-    rctx.drawImage(fullImg, 0, 0, OUT_W, OUT_H);
+    rctx.drawImage(fullImg,0,0,OUT_W,OUT_H);
+    var txt = guestName.length===2 ? guestName[0]+'　'+guestName[1] : guestName;
+    var fz = Math.round(nameFontSize * s2);
     rctx.save();
-    rctx.translate(nameX * outScale, nameY * outScale);
+    rctx.translate(nameX*s2, nameY*s2);
     rctx.fillStyle = '#ffe680';
-    rctx.font = 'bold ' + Math.round(nameFontSize * outScale) + 'px ' + FONT_FAMILY;
+    rctx.font = FONT.replace('%',fz);
     rctx.textAlign = 'center';
     rctx.textBaseline = 'middle';
-    if(guestName.length===2) rctx.fillText(guestName[0]+'　'+guestName[1],0,0);
-    else rctx.fillText(guestName,0,0);
+    rctx.fillText(txt,0,0);
     rctx.restore();
 
     rc.toBlob(function(blob){
       var url = URL.createObjectURL(blob);
       document.getElementById('resultImg').src = url;
       document.getElementById('resultArea').classList.add('show');
-      showToast('✅ 请长按图片保存到相册');
+      showToast('✅ 长按图片保存到相册');
       document.getElementById('resultArea').scrollIntoView({behavior:'smooth'});
     },'image/jpeg',0.85);
   }
@@ -217,7 +195,7 @@ document.getElementById('btnReset').addEventListener('click', function(){
   document.getElementById('posTip').textContent = '👆 点击下划线位置定位名字';
   document.getElementById('resultArea').classList.remove('show');
   drawPreview();
-  showToast('🔄 已重置，请重新定位');
+  showToast('🔄 已重置');
 });
 
 var _tid;
