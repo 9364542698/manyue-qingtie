@@ -19,7 +19,7 @@ h1{text-align:center;color:#d4a017;font-size:1.3em;letter-spacing:6px;margin-bot
 .input-row input::placeholder{color:#553333;font-size:0.55em;letter-spacing:3px;}
 .btns{display:flex;gap:8px;margin-bottom:10px;}
 .btns button{flex:1;padding:16px;border:none;border-radius:14px;font-size:1.1em;font-weight:bold;letter-spacing:4px;cursor:pointer;}
-.btn-main{background:linear-gradient(180deg,#ffd700,#d2b4af);color:#3d0000;font-size:1.2em!important;box-shadow:0 4px 16px rgba(200,160,30,0.35);}
+.btn-main{background:linear-gradient(180deg,#ffd700,#ffd700);color:#3d0000;font-size:1.2em!important;box-shadow:0 4px 16px rgba(200,160,30,0.35);}
 .btn-main:active{transform:scale(0.96);}
 .btn-sub{background:#4a2820;color:#d4a017;border:2px solid #8b6914!important;}
 .result-area{background:#2c1510;border-radius:12px;padding:12px;display:none;}
@@ -115,7 +115,7 @@ function drawPreview(){
   var sx = nameX * scale, sy = nameY * scale, fs = nameFontSize * scale;
   ctx.save();
   ctx.translate(sx,sy);
-  ctx.fillStyle = '#d2b4af';
+  ctx.fillStyle = '#ffd700';
   ctx.font = 'bold ' + fs + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -166,7 +166,7 @@ document.getElementById('btnGenerate').addEventListener('click', function(){
     rctx.drawImage(fullImg,0,0,FULL_W,FULL_H);
     rctx.save();
     rctx.translate(nameX,nameY);
-    rctx.fillStyle = '#d2b4af';
+    rctx.fillStyle = '#ffd700';
     rctx.font = 'bold ' + nameFontSize + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
     rctx.textAlign = 'center';
     rctx.textBaseline = 'middle';
