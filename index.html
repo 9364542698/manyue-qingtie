@@ -115,7 +115,7 @@ function drawPreview(){
   var sx = nameX * scale, sy = nameY * scale, fs = nameFontSize * scale;
   ctx.save();
   ctx.translate(sx,sy);
-  ctx.fillStyle = '#0a0000';
+  ctx.fillStyle = '#c9a020';
   ctx.font = 'bold ' + fs + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -166,7 +166,7 @@ document.getElementById('btnGenerate').addEventListener('click', function(){
     rctx.drawImage(fullImg,0,0,FULL_W,FULL_H);
     rctx.save();
     rctx.translate(nameX,nameY);
-    rctx.fillStyle = '#0a0000';
+    rctx.fillStyle = '#c9a020';
     rctx.font = 'bold ' + nameFontSize + 'px "SimSun","宋体","Noto Serif CJK SC",serif';
     rctx.textAlign = 'center';
     rctx.textBaseline = 'middle';
